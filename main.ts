@@ -8,6 +8,7 @@ import Paseto from "./lib/paseto";
 import { payment } from "./api/payment";
 import { payment_update } from "./api/payment_update";
 import { ApiResponse } from "./api/type";
+import { api_key_middleware } from "./api/middleware/apikey";
 
 const app: express.Application = express();
 
@@ -20,6 +21,7 @@ app.get('/', (_req, _res) => {
 
 app.post('/flowid', flow_id_handler);
 app.post('/verify', verify_handler);
+app.use(api_key_middleware());
 app.post('/new-payment', payment);
 app.post('/update-payment', payment_update);
 

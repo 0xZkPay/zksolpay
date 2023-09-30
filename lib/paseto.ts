@@ -14,9 +14,13 @@ namespace Paseto {
         // console.log(bs58.encode(V4.keyObjectToBytes(key)));
     }
 
-    export const sign = async (msg: string) => {
-        return V4.sign({ subarray: msg }, key)
+    export const sign = async (addr: string) => {
+        return V4.sign({ subarray: addr }, key)
     }
+    export const get_payload = async <T>(token: string) => {
+        return await V4.verify(token, key) as T
+    }
+
 }
 
 
