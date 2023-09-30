@@ -1,0 +1,15 @@
+tasks:
+  - name: DB
+    command: |
+     docker run --name="db_max" --rm -d -p 5432:5432 \
+      -e POSTGRES_PASSWORD=max_pass \
+      -e POSTGRES_USER=max_user \
+      -e POSTGRES_DB=max_db \
+      postgres -c log_statement=all
+      sleep 12
+      gp sync-done db
+      cp sample.env .env
+  - name: postgres shell
+    command: |
+      gp sync-await db
+      docker exec -it db_max psql -U max_user max_db
