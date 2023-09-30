@@ -26,7 +26,6 @@ app.post('/update-payment', payment_update);
 
 const start = async () => {
     await Paseto.init();
-    console.log("All models were synchronized successfully.");
     app.listen(port, () => {
         console.log(`TypeScript with Express
             http://localhost:${port}/`);

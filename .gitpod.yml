@@ -1,5 +1,5 @@
 tasks:
-  - name: DB
+  - name: postgres
     command: |
      docker run --name="db_max" --rm -d -p 5432:5432 \
       -e POSTGRES_PASSWORD=max_pass \
@@ -8,8 +8,12 @@ tasks:
       postgres -c log_statement=all
       sleep 12
       gp sync-done db
-      cp sample.env .env
-  - name: postgres shell
-    command: |
       gp sync-await db
       docker exec -it db_max psql -U max_user max_db
+  - name: app
+    init: yarn
+    command: |
+      gp sync-await db
+      cp sample.env .env
+      yarn db-sync
+      yarn dev
