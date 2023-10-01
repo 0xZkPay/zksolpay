@@ -3,20 +3,20 @@ import { sequelize } from "../sequize";
 import { AppUser } from "./User";
 
 export class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> {
-    declare pAddr: string;
-    declare privKey: string;
+    declare receiving_addr: string;
+    declare receiving_priv_key: string;
     declare owner: string;
     declare amount: number;
     declare status: string;
 }
 
 Payment.init({
-    pAddr: {
+    receiving_addr: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
     },
-    privKey: {
+    receiving_priv_key: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -35,5 +35,5 @@ Payment.init({
         type: DataTypes.STRING,
     }
 }, {
-    sequelize, tableName: 'payments'
+    sequelize, tableName: 'payments', underscored: true
 });

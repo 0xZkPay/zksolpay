@@ -1,11 +1,16 @@
 import { AppUser } from "./User";
 
-import { DataTypes, Model } from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import { sequelize } from "../sequize";
-class FlowT extends Model { }
+export class Flow extends Model<InferAttributes<Flow>, InferCreationAttributes<Flow>> {
+    declare user_addr: string;
+    declare flow_id: string;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
+}
 
-export const Flow = sequelize.define<FlowT>('flows', {
-    userAddr: {
+Flow.init({
+    user_addr: {
         type: DataTypes.STRING,
         references: {
             model: AppUser,
@@ -13,9 +18,12 @@ export const Flow = sequelize.define<FlowT>('flows', {
         },
         primaryKey: true
     },
-    flowId: {
+    flow_id: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true
-    }
-});
+    },
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE
+}, { sequelize, tableName: 'flows', underscored: true })
+

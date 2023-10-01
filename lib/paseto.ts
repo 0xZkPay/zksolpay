@@ -18,7 +18,7 @@ namespace Paseto {
         return V4.sign({ subarray: addr }, key)
     }
     export const get_payload = async <T>(token: string) => {
-        return await V4.verify(token, key) as T
+        return await V4.verify(token, key) as { subarray: T }
     }
 
 }

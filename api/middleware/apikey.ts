@@ -8,7 +8,7 @@ const handler: RequestHandler = async (_req, _res, _next) => {
         _res.status(400).send(ApiResponse.e("api_key header is required and should be non empty"))
         return;
     }
-    const app_user = await AppUser.findOne({ where: { apiKey: api_key } })
+    const app_user = await AppUser.findOne({ where: { api_key: api_key } })
     if (!app_user) {
         _res.status(400).send(ApiResponse.e("invalid api key"))
         return;

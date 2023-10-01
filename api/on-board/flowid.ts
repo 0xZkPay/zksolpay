@@ -1,13 +1,13 @@
 
-import { sequelize } from '../db/sequize';
+import { sequelize } from '../../db/sequize';
 import { QueryTypes } from 'sequelize';
-import { Flow } from '../db/models/Flow';
+import { Flow } from '../../db/models/Flow';
 import { PublicKey, Keypair } from '@solana/web3.js';
 import { RequestHandler } from 'express';
 import crypto from "crypto";
 import bs58 from 'bs58';
-import { ApiResponse } from './type';
-import { Vars } from '../lib/config';
+import { ApiResponse } from '../type';
+import { Vars } from '../../lib/config';
 
 type PostFlowIdRequest = {
     addr: string
@@ -36,12 +36,12 @@ export const flow_id_handler: RequestHandler = async (_req, _res) => {
                 replacements: [body.addr,
                 bs58.encode(Buffer.from(key.secretKey)),
                 key.publicKey.toBase58(),
-                "pay_api_" + crypto.randomUUID()],
+                    null],
                 type: QueryTypes.INSERT
             }
         );
         const flow_id = crypto.randomUUID();
-        await Flow.create({ flowId: flow_id, userAddr: body.addr })
+        await Flow.create({ flow_id: flow_id, user_addr: body.addr })
         _res.send(ApiResponse.s("flow id generated", { flowId: flow_id, eula: Vars.EULA }))
     } catch (error) {
         console.log(error);

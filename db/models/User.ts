@@ -4,9 +4,9 @@ import { sequelize } from "../sequize";
 
 export class AppUser extends Model<InferAttributes<AppUser>, InferCreationAttributes<AppUser>> {
     declare addr: string;
-    declare walletKey: string;
-    declare walletAddr: string;
-    declare apiKey: string;
+    declare wallet_key: string;
+    declare wallet_addr: string;
+    declare api_key: string;
 }
 
 
@@ -16,18 +16,18 @@ AppUser.init({
         allowNull: false,
         primaryKey: true,
     },
-    walletKey: {
+    wallet_key: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    walletAddr: {
+    wallet_addr: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    apiKey: {
+    api_key: {
         type: DataTypes.STRING,
-        allowNull: false,
+        unique: true
     }
 }, {
-    sequelize, tableName: "app_users"
+    sequelize, tableName: "app_users", underscored: true
 });

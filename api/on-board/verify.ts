@@ -1,18 +1,20 @@
 
-import { Op, QueryTypes } from 'sequelize';
-import { Flow } from '../db/models/Flow';
+import { Op } from 'sequelize';
 import { RequestHandler } from 'express';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
-import Paseto from '../lib/paseto';
-import { ApiResponse } from './type';
-import { Vars } from '../lib/config';
-import { AppUser } from '../db/models/User';
+import { Flow } from '../../db/models/Flow';
+import { AppUser } from '../../db/models/User';
+import { Vars } from '../../lib/config';
+import Paseto from '../../lib/paseto';
+import { ApiResponse } from '../type';
+
 
 type PostVerifyRequest = {
     flowid: string,
     public_key: string,
-    signature: string
+    signature: string,
+
 }
 
 export const verify_handler: RequestHandler = async (_req, _res) => {
@@ -20,9 +22,9 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
 
     const flow = await Flow.findOne({
         where: {
-            flowId: body.flowid,
-            userAddr: body.public_key,
-            createdAt: {
+            flow_id: body.flowid,
+            user_addr: body.public_key,
+            created_at: {
                 [Op.gt]: new Date((new Date().getTime()) - 10 * 60 * 1000)
             }
         },
@@ -40,7 +42,7 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
         .verify(
             new TextEncoder().encode(message),
             bs58.decode(body.signature),
-            bs58.decode(body.public_key)
+            bs58.decode(flow.user_addr)
         )
 
     if (!verified) {
@@ -49,11 +51,9 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
     }
     await Flow.destroy({
         where: {
-            flowId: body.flowid,
+            flow_id: body.flowid,
         },
     });
     const paseto = await Paseto.sign(body.public_key)
-
-    const app_user = await AppUser.findOne({ where: { addr: body.public_key } }) as AppUser
-    _res.send(ApiResponse.s("paseto generated", { paseto_token: paseto, api_key: app_user?.apiKey }));
+    _res.send(ApiResponse.s("paseto generated", { paseto_token: paseto }));
 }

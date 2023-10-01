@@ -11,7 +11,7 @@ tasks:
       gp sync-await db
       docker exec -it db_max psql -U max_user max_db
   - name: app
-    init: yarn
+    init: npm i -g ts-node && yarn
     command: |
       gp sync-await db
       cp sample.env .env
