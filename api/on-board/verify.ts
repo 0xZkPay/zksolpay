@@ -14,7 +14,8 @@ type PostVerifyRequest = {
     flowid: string,
     public_key: string,
     signature: string,
-
+    name: string,
+    city: string
 }
 
 export const verify_handler: RequestHandler = async (_req, _res) => {
@@ -54,6 +55,8 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
             flow_id: body.flowid,
         },
     });
+
+    await AppUser.update({ city: body.city, name: body.name }, { where: { addr: flow.user_addr } })
     const paseto = await Paseto.sign(body.public_key)
     _res.send(ApiResponse.s("paseto generated", { paseto_token: paseto }));
 }

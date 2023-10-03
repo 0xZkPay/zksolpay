@@ -12,6 +12,6 @@ export const elusive_send = async (kp: Keypair, amount: number, recipient: Publi
     const topupTxData = await elusiv.buildTopUpTx(amount - (0.01 * LAMPORTS_PER_SOL), 'LAMPORTS');
     topupTxData.tx.partialSign(kp);
     await elusiv.sendElusivTx(topupTxData);
-    const sendTx = await elusiv.buildSendTx(amount - (0.01 * LAMPORTS_PER_SOL), recipient, 'LAMPORTS');
+    const sendTx = await elusiv.buildSendTx(amount - (0.03 * LAMPORTS_PER_SOL), recipient, 'LAMPORTS');
     await elusiv.sendElusivTx(sendTx);
 }
