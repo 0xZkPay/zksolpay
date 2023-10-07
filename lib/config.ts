@@ -7,5 +7,6 @@ export const Vars = {
         DB_NAME: process.env.DB_NAME
     },
     EULA: process.env.EULA,
-    PASETO_PV_KEY: process.env.PASETO_PV_KEY
+    PASETO_PV_KEY: process.env.PASETO_PV_KEY,
+    FEE_WALLET: process.env.FEE_WALLET as string
 }
