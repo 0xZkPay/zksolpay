@@ -34,6 +34,11 @@ export const post_payment: RequestHandler = async (_req, _res) => {
             return
         }
         _res.send(ApiResponse.s("receiving address generated", { addr: wallet_addr }));
+
+        setTimeout(async () => {
+            await Payment.update({ status: "cancelled" }, { where: { receiving_addr: wallet_addr, status: "pending" } })
+        }, 1000 * 60 * 5);
     }
+
 }
 

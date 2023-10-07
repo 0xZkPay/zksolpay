@@ -37,8 +37,13 @@ export const payment_update: RequestHandler = async (_req, _res) => {
         return
     }
 
-    if (payment_data && payment_data.status == "success") {
-        _res.send(ApiResponse.s("payment successfull"))
+    if (payment_data.status == "success") {
+        _res.send(ApiResponse.s("payment successful"))
+        return
+    }
+
+    if (payment_data.status == "cancelled") {
+        _res.send(ApiResponse.e("cannot update cancelled payment"))
         return
     }
 
@@ -66,7 +71,7 @@ export const payment_update: RequestHandler = async (_req, _res) => {
                         await Payment.update({ status: "success", tx_hash: transactionList[0].signature }, { where: { receiving_addr: body.addr } })
                         const priv_seed = bs58.decode(payment_data.receiving_priv_key)
                         elusive_send(Keypair.fromSecretKey(priv_seed), payment_data.amount, new PublicKey(merchant.payout_addr))
-                        _res.send(ApiResponse.s("payment successfull"))
+                        _res.send(ApiResponse.s("payment successful"))
                         return
                     }
                 }
