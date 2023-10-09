@@ -14,9 +14,9 @@ import { paseto_middleware } from "./api/middleware/paseto";
 import { get_payments } from "./api/manage/get_payments";
 import { user_get_handler, user_patch_handler } from "./api/manage/user";
 import { merchant_get_handler, merchant_patch_handler, merchant_post_handler } from "./api/manage/merchant";
-
+import cors from "cors";
 const app: express.Application = express();
-
+app.use(cors())
 app.use(express.json());
 const port: number | string = process.env.PORT || 3001;
 
