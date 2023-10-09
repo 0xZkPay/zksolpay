@@ -18,7 +18,7 @@ import { merchant_get_handler, merchant_patch_handler, merchant_post_handler } f
 const app: express.Application = express();
 
 app.use(express.json());
-const port: number = 3000;
+const port: number | string = process.env.PORT || 3001;
 
 app.get('/', (_req, _res) => {
     _res.send(ApiResponse.s("Server OK"));
@@ -44,7 +44,7 @@ app.get('/manage/payments', get_payments);
 
 const start = async () => {
     await Paseto.init();
-    app.listen(port, () => {
+    app.listen(+port, () => {
         console.log(`TypeScript with Express
             http://localhost:${port}/`);
     });
