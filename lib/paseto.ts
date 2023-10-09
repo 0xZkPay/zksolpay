@@ -31,8 +31,6 @@ namespace Paseto {
         const payload = await V4.verify(token, key) as { subarray: Payload }
         const date_now = new Date();
         const time_now = Math.ceil(date_now.getTime() / 1000)
-        console.log(time_now - payload.subarray.expiry);
-
         if (payload.subarray.expiry > time_now)
             return payload.subarray.addr
         else
