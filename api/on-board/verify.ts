@@ -20,7 +20,13 @@ type PostVerifyRequest = {
 
 export const verify_handler: RequestHandler = async (_req, _res) => {
     const body: PostVerifyRequest = _req.body;
-
+    let signature_base58: Uint8Array;
+    try {
+        signature_base58 = bs58.decode(body.signature);
+    } catch (error) {
+        _res.status(500).send(ApiResponse.eP("failed to decode base58 string", error))
+        return;
+    }
     const flow = await Flow.findOne({
         where: {
             flow_id: body.flowid,
@@ -37,12 +43,13 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
     }
 
     const message = body.flowid + Vars.EULA;
+
     const verified = nacl
         .sign
         .detached
         .verify(
             new TextEncoder().encode(message),
-            bs58.decode(body.signature),
+            signature_base58,
             bs58.decode(flow.user_addr)
         )
 
