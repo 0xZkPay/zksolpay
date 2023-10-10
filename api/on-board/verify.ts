@@ -24,7 +24,7 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
     try {
         signature_base58 = bs58.decode(body.signature);
     } catch (error) {
-        _res.status(500).send(ApiResponse.eP("failed to decode base58 string", error))
+        _res.status(500).send(ApiResponse.eP("failed to decode base58 signature", error))
         return;
     }
     const flow = await Flow.findOne({
