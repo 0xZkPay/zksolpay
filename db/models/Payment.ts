@@ -1,13 +1,17 @@
-import { DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
 import { sequelize } from "../sequize";
-import { AppUser } from "./User";
+import { Merchant } from "./Merchant";
 
 export class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> {
     declare receiving_addr: string;
     declare receiving_priv_key: string;
-    declare owner: string;
+    declare merchant_id: string;
     declare amount: number;
     declare status: string;
+    declare product_id: string;
+    declare product_name: string;
+    declare created_at?: CreationOptional<Date>;
+    declare tx_hash: CreationOptional<string>;
 }
 
 Payment.init({
@@ -20,20 +24,24 @@ Payment.init({
         type: DataTypes.STRING,
         allowNull: false,
     },
-    owner: {
+    merchant_id: {
         type: DataTypes.STRING,
         references: {
-            model: AppUser,
-            key: 'addr',
+            model: Merchant,
+            key: 'id',
         },
-        primaryKey: true,
     },
     amount: {
         type: DataTypes.INTEGER,
     },
     status: {
         type: DataTypes.STRING,
-    }
+    },
+    product_id: { type: DataTypes.STRING, allowNull: false },
+    product_name: { type: DataTypes.STRING, allowNull: false },
+    tx_hash: {
+        type: DataTypes.STRING,
+    },
 }, {
     sequelize, tableName: 'payments', underscored: true
 });

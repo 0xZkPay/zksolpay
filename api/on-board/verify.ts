@@ -14,12 +14,19 @@ type PostVerifyRequest = {
     flowid: string,
     public_key: string,
     signature: string,
-
+    name: string,
+    city: string
 }
 
 export const verify_handler: RequestHandler = async (_req, _res) => {
     const body: PostVerifyRequest = _req.body;
-
+    let signature_base58: Uint8Array;
+    try {
+        signature_base58 = bs58.decode(body.signature);
+    } catch (error) {
+        _res.status(500).send(ApiResponse.eP("failed to decode base58 signature", error))
+        return;
+    }
     const flow = await Flow.findOne({
         where: {
             flow_id: body.flowid,
@@ -36,12 +43,13 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
     }
 
     const message = body.flowid + Vars.EULA;
+
     const verified = nacl
         .sign
         .detached
         .verify(
             new TextEncoder().encode(message),
-            bs58.decode(body.signature),
+            signature_base58,
             bs58.decode(flow.user_addr)
         )
 
@@ -54,6 +62,8 @@ export const verify_handler: RequestHandler = async (_req, _res) => {
             flow_id: body.flowid,
         },
     });
+
+    await AppUser.update({ city: body.city, name: body.name }, { where: { addr: flow.user_addr } })
     const paseto = await Paseto.sign(body.public_key)
     _res.send(ApiResponse.s("paseto generated", { paseto_token: paseto }));
 }

@@ -18,5 +18,12 @@ export namespace ApiResponse {
         };
         return res;
     }
+
+    export const eP = <T>(error: string, payload?: T) => {
+        let res: ApiResponse<T> = {
+            error, payload
+        };
+        return res;
+    }
 }
 

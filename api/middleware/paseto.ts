@@ -13,14 +13,25 @@ const handler: RequestHandler = async (_req, _res, _next) => {
     }
 
     auth_token = auth_token.split(" ")[1];
-    const payload = await Paseto.get_payload<string>(auth_token);
-    const app_user = await AppUser.findOne({ where: { addr: payload.subarray } })
-    if (!app_user) {
-        _res.status(400).send(ApiResponse.e("user not found"))
-        return;
+
+    try {
+        const addr = await Paseto.get_addr(auth_token);
+        const app_user = await AppUser.findOne({ where: { addr: addr } })
+        if (!app_user) {
+            _res.status(400).send(ApiResponse.e("user not found"))
+            return;
+        }
+        _res.locals[USER_ADDR_LOCAL] = app_user.addr;
+        _next();
+    } catch (error) {
+
+        if (error == Paseto.ERR_TOKEN_EXPIRED)
+            _res.status(401).send(ApiResponse.e("token expired"))
+        else {
+            console.log(error);
+            _res.status(500).send(ApiResponse.e("internal server error"))
+        }
     }
-    _res.locals[USER_ADDR_LOCAL] = app_user.addr;
-    _next();
 }
 
 export const paseto_middleware = () => handler;

@@ -16,7 +16,6 @@ type PostFlowIdRequest = {
 
 export const flow_id_handler: RequestHandler = async (_req, _res) => {
     const body: PostFlowIdRequest = _req.body;
-    const key = Keypair.generate();
     try {
         const is_on_curve = PublicKey.isOnCurve(body.addr)
         if (!is_on_curve) {
@@ -28,15 +27,12 @@ export const flow_id_handler: RequestHandler = async (_req, _res) => {
     }
     try {
         await sequelize.query(
-            `INSERT INTO app_users 
-                            VALUES(?,?,?,?,CURRENT_DATE,CURRENT_DATE) 
+            `INSERT INTO app_users (addr,created_at,updated_at)
+                            VALUES(?,CURRENT_DATE,CURRENT_DATE) 
                          ON CONFLICT (addr) DO NOTHING;
                 `,
             {
-                replacements: [body.addr,
-                bs58.encode(Buffer.from(key.secretKey)),
-                key.publicKey.toBase58(),
-                    null],
+                replacements: [body.addr],
                 type: QueryTypes.INSERT
             }
         );
