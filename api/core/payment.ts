@@ -6,6 +6,7 @@ import { Keypair } from "@solana/web3.js"
 import { Payment } from '../../db/models/Payment';
 import { Merchant } from '../../db/models/Merchant';
 import { ApiResponse } from '../type';
+import { Vars } from '../../lib/config';
 
 type PostPayment = {
     amount_lamport: number,
@@ -37,7 +38,7 @@ export const post_payment: RequestHandler = async (_req, _res) => {
 
         setTimeout(async () => {
             await Payment.update({ status: "cancelled" }, { where: { receiving_addr: wallet_addr, status: "pending" } })
-        }, 1000 * 60 * 5);
+        }, 1000 * 60 * +Vars.ORDER_EXPIRATION_DURATION);
     }
 
 }

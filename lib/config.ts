@@ -8,5 +8,6 @@ export const Vars = {
     },
     EULA: process.env.EULA,
     PASETO_PV_KEY: process.env.PASETO_PV_KEY,
-    FEE_WALLET: process.env.FEE_WALLET as string
+    FEE_WALLET: process.env.FEE_WALLET as string,
+    ORDER_EXPIRATION_DURATION: process.env.ORDER_EXPIRATION_DURATION as string,
 }
